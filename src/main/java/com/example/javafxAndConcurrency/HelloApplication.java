@@ -1,6 +1,7 @@
 package com.example.javafxAndConcurrency;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -38,7 +39,7 @@ public class HelloApplication extends Application {
         pane.getChildren().add(textArea);
 
         startButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {/*startTask();*/}});
+            public void handle(ActionEvent event) {startTask();}});
 
         exitButton.setOnAction(new EventHandler <ActionEvent>() {
             public void handle(ActionEvent event) {stage.close();}});
@@ -52,6 +53,43 @@ public class HelloApplication extends Application {
 
         Scene scene = new Scene(pane);
         return scene;
+    }
+
+    public void startTask() {
+        Runnable task = new Runnable() {
+            public void run() {
+                runTask();
+            }
+        };
+
+        // Run the task in a background thread
+        Thread backgroundThread = new Thread(task);
+        // Terminate the running thread if the application exits
+        backgroundThread.setDaemon(true);
+        // Start the thread
+        backgroundThread.start();
+    }
+
+    public void runTask() {
+        for(int i = 1; i <= 10; i++) {
+            try {
+                final String status = "Processing " + i + " of " + 10;
+
+                // Update the Label on the JavaFx Application Thread
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        statusLabel.setText(status);
+                    }
+                });
+
+                textArea.appendText(status+"\n");
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
