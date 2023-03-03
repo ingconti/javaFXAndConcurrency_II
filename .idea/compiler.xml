@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="javaFXAndConcurrency_II" target="17" />
+      <module name="javaFXAndConcurrency_II" target="19" />
     </bytecodeTargetLevel>
   </component>
 </project>
